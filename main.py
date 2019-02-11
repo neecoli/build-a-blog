@@ -6,7 +6,7 @@ app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://build-a-blog@localhost:8889/build-a-blog'
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
-#app.secret_key = 'buildablog'
+app.secret_key = 'buildablog'
 
 class Blog(db.Model):
 
@@ -19,16 +19,14 @@ class Blog(db.Model):
         self.body = body
         
 
-
-
-blogs = []
+#blogs = []
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
 
     if request.method == 'POST':
-        blogname = request.form['blog']
-        blogs.append(blogname)
+        blogname = request.form['title']
+        #blogs.append(blogname)
         new_blog = Blog(blogname)
         db.session.add(new_blog)
         db.session.commit()
@@ -44,7 +42,25 @@ def index():
 
 #submit a new post at the /newpost route; after submitting new post
 #app displays main blog page
-#@app.route('/newpost')
+@app.route('/newpost', methods=['POST'])
+def new_post():
+    blogname = request.form['title']
+    blogentry = request.form['body']
+    titleerror = ''
+    entryerror = ''
+    blogs = Blog.query.all()
+
+    if (not blogname) or (blogname.strip() == ""):
+        titleerror = "Enter a Title"
+        
+    if (not blogentry) or (blogentry.strip() == ""):
+        entryerror = "Enter a blog"
+    
+    if not titleerror and not entryerror:
+        return render_template('addblog.html', title="Add a Blog Entry", blogs=blogs)
+    else:
+        return render_template('addblog.html', titleerror=titleerror, entryerror=entryerror)
+        #return redirect("/?error=" + error)
 
 if __name__ == '__main__':
     app.run()

@@ -1,6 +1,27 @@
-<!--
 {% extends "base.html" %}
-
+<!doctype html>
+<html>
 {% block content %}
+    <head>
+        <h1>Main Blog Page</h1>
+        <style>
+            textarea {
+                margin: 10px 0;
+                width: 540px;
+                height: 120px;
+            }
+        </style>
+    </head>
+    <body> 
+      <form action= "/blog", method='post'>
+        <ul>
+          {% for blog in blogs %}
+          <li>{{blog.title}}</li>
+          {% endfor %}
+        </ul>
+    </body>
 {% endblock %} 
--->
+</html>
+
+
+

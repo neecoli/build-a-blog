@@ -34,10 +34,24 @@ def index():
     blogs = Blog.query.all()
     return render_template('addblog.html',title="Add a Blog Entry", blogs=blogs) 
 
+
 #The /blog route displays all the main blog posts.
-#@app.route('/blog')
+@app.route('/blog', methods=['POST'])
+def display_mainblog():
+    blogname = request.form['title']
+    blogentry = request.form['body']
+    
+    #if user clicks on blog, redirect to individual blog page
+    #query db for the blog entry
+    if request.method == 'POST':
+        blog_id = int(request.form['blogid'])
+        oneblog = Blog(title, body)
+        blog = Blog.query.get(blog_id)
+        db.session.commit()
+    
+        return render_template('individualblog.html', blogname=blogname, blogentry=blogentry)
 
-
+    return render_template('mainblog.html')
 
 
 #submit a new post at the /newpost route; after submitting new post
@@ -57,7 +71,9 @@ def new_post():
         entryerror = "Enter a blog"
     
     if not titleerror and not entryerror:
-        return render_template('addblog.html', title="Add a Blog Entry", blogs=blogs)
+        #case2: after adding post, go to individual post page
+        return render_template('individualblog.html', blogname=blogname, blogentry=blogentry)
+        #return render_template('mainblog.html', blogs=blogs)
     else:
         return render_template('addblog.html', titleerror=titleerror, entryerror=entryerror)
         #return redirect("/?error=" + error)

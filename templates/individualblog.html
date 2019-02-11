@@ -1,6 +1,22 @@
-<!--
+
 {% extends "base.html" %}
 
+<!doctype html>
 {% block content %}
+<html>
+     <head>
+        <h1>{{blogname}}</h1>
+          <style>
+            textarea {
+            margin: 10px 0;
+            width: 540px;
+            height: 120px;
+            }
+          </style>
+      </head>
+    <body>
+        <p>{{blogentry}}</p>
+    </body>
+</html>
+
 {% endblock %} 
--->

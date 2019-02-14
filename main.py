@@ -14,7 +14,7 @@ class Blog(db.Model):
     title = db.Column(db.String(120))
     body = db.Column(db.String(500))
 
-    def __init__(self, name, body):
+    def __init__(self, title, body):
         self.title = title
         self.body = body
         
@@ -23,46 +23,43 @@ class Blog(db.Model):
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-
-    if request.method == 'POST':
-        blogname = request.form['title']
-        #blogs.append(blogname)
-        new_blog = Blog(blogname)
-        db.session.add(new_blog)
-        db.session.commit()
-
-    blogs = Blog.query.all()
-    return render_template('addblog.html',title="Add a Blog Entry", blogs=blogs) 
+    return redirect('/blog')
 
 
 #The /blog route displays all the main blog posts.
-@app.route('/blog', methods=['POST'])
+@app.route('/blog', methods=['POST', 'GET'])
 def display_mainblog():
-    blogname = request.form['title']
-    blogentry = request.form['body']
     
     #if user clicks on blog, redirect to individual blog page
     #query db for the blog entry
-    if request.method == 'POST':
-        blog_id = int(request.form['blogid'])
-        oneblog = Blog(title, body)
+    
+    if request.method == 'GET':
+        blog_id = request.args.get('blogid')
+        #oneblog = Blog(title, body)
         blog = Blog.query.get(blog_id)
         db.session.commit()
     
         return render_template('individualblog.html', blogname=blogname, blogentry=blogentry)
-
-    return render_template('mainblog.html')
+    
+    blogs = Blog.query.all()
+    return render_template('mainblog.html', blogs=blogs)
 
 
 #submit a new post at the /newpost route; after submitting new post
 #app displays main blog page
-@app.route('/newpost', methods=['POST'])
+@app.route('/newpost', methods=['POST', 'GET'])
 def new_post():
+    if request.method == 'GET':
+        return render_template('addblog.html')
+    
     blogname = request.form['title']
     blogentry = request.form['body']
+    new_blog = Blog(blogname, blogentry)
+    db.session.add(new_blog)
+    db.session.commit()
+    
     titleerror = ''
     entryerror = ''
-    blogs = Blog.query.all()
 
     if (not blogname) or (blogname.strip() == ""):
         titleerror = "Enter a Title"

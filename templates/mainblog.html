@@ -16,7 +16,8 @@
       <form action= "/blog", method='post'>
         <ul>
           {% for blog in blogs %}
-          <li>{{blog.title}}</li>
+          <li><a href = "/blog?blogid=blog_id">{{blog.title}}</a></li> <!--enter blog-ID query parameter-->
+          <li>{{blog.body}}</li>
           {% endfor %}
         </ul>
     </body>

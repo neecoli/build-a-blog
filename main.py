@@ -33,14 +33,13 @@ def display_mainblog():
     #if user clicks on blog, redirect to individual blog page
     #query db for the blog entry
     
-    if request.method == 'GET':
-        blog_id = request.args.get('blogid')
+    if request.args:
+        blog_id = request.args.get('id')
         #oneblog = Blog(title, body)
         blog = Blog.query.get(blog_id)
-        db.session.commit()
-    
-        return render_template('individualblog.html', blogname=blogname, blogentry=blogentry)
-    
+            
+        return render_template('individualblog.html', blogname=blog.title, blogentry=blog.body)
+
     blogs = Blog.query.all()
     return render_template('mainblog.html', blogs=blogs)
 
